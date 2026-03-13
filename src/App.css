@@ -1,0 +1,86 @@
+/* Treatments card hover effect */
+.treatment-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 320px;
+  padding: 36px;
+  border-radius: 24px;
+  overflow: hidden;
+  line-height: 1.6;
+  border: 1px solid #999999;
+  background-color: #f9fafb;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.treatment-card .content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  color: #000000;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.treatment-card .heading {
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1.3;
+  z-index: 1;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.treatment-card .para {
+  z-index: 1;
+  opacity: 0.85;
+  font-size: 0.95rem;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.treatment-card::before,
+.treatment-card::after {
+  content: "";
+  position: absolute;
+  width: 10.4rem;
+  height: 10.4rem;
+  background: #10b981;
+  z-index: 0;
+  opacity: 0;
+  border-radius: 50%;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.treatment-card::before {
+  right: -5.2rem;
+  top: -5.2rem;
+}
+
+.treatment-card::after {
+  left: -5.2rem;
+  bottom: -5.2rem;
+}
+
+.treatment-card:hover::before,
+.treatment-card:hover::after {
+  scale: 7;
+  opacity: 1;
+}
+
+.treatment-card:hover .heading,
+.treatment-card:hover .para {
+  color: #ffffff;
+}
+
+.treatment-card:hover {
+  box-shadow:
+    0 6px 13px rgba(0, 0, 0, 0.1),
+    0 24px 24px rgba(0, 0, 0, 0.09),
+    0 55px 33px rgba(0, 0, 0, 0.05),
+    0 97px 39px rgba(0, 0, 0, 0.01),
+    0 152px 43px rgba(0, 0, 0, 0);
+  border-color: #10b981;
+  scale: 1.05;
+}
+
