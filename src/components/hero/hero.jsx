@@ -88,7 +88,7 @@ export default function HeroSection() {
 
         {/* Buttons */}
         <div style={fadeUp(0.8)} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <button className="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white px-8 py-4 text-lg rounded-full shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer">
+          <button className="bg-linear-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white px-8 py-4 text-lg rounded-full shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer">
             Schedule Consultation
           </button>
           <button className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 px-8 py-4 text-lg rounded-full transition-all duration-300 cursor-pointer">
@@ -100,7 +100,7 @@ export default function HeroSection() {
         <div style={fadeUp(1)} className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mt-20">
           {stats.map((stat) => (
             <div key={stat.label} className="text-white">
-              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              <div className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
                 {stat.number}
               </div>
               <div className="text-sm sm:text-base text-gray-300 mt-1">{stat.label}</div>

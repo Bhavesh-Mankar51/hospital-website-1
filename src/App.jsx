@@ -1,26 +1,25 @@
-import { useState } from 'react'
-import './App.css'
+import { Route, Routes } from 'react-router-dom'
 import Navbar from './components/navbar/navbar'
-import Hero from './components/hero/hero'
-import DoctorAbout from './components/about/about'
-import Treatments from './components/treatments/treatments'
-import BeforeAfterGallery from './components/gallery/gallery'
-import AppointmentSection from './components/appointment/appointment'   
-import Footer from './components/footer/footer'
+import './App.css'
+import Home from './components/home/home'
+import Acne from './components/treatments/acnetreatment'
+import Pigmentation from './components/treatments/pigmentation'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
-    <>
+    <div>
       <Navbar />
-      <Hero />
-      <DoctorAbout />
-      <Treatments />
-      <BeforeAfterGallery />
-      <AppointmentSection />
-      <Footer />
-    </>
+      <div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/acne-treatment" element={<Acne />} />
+          <Route path="/pigmentation" element={<Pigmentation />} />
+        </Routes>
+      </div>
+    </div>
   )
 }
 
