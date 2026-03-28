@@ -1,111 +1,123 @@
-import React, { useEffect, useRef } from "react";
-import { gsap } from "gsap";
+import React, { useState, useEffect } from 'react'
+import Image from '../../assets/Image-1.jpg'
+function ImageWithFallback({ src, alt, className, style, ...rest }) {
+  const ERROR_IMG_SRC =
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4KCg=='
+  const [didError, setDidError] = useState(false)
+  return didError ? (
+    <div className={`inline-block bg-gray-100 text-center align-middle ${className ?? ''}`} style={style}>
+      <div className="flex items-center justify-center w-full h-full">
+        <img src={ERROR_IMG_SRC} alt="Error loading image" {...rest} data-original-url={src} />
+      </div>
+    </div>
+  ) : (
+    <img src={src} alt={alt} className={className} style={style} {...rest} onError={() => setDidError(true)} />
+  )
+}
 
-const Hero = () => {
-  const titleRef = useRef(null);
-  const paragraphRef = useRef(null);
-  const buttonsRef = useRef(null);
+export default function HeroSection() {
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 40,
-        duration: 1,
-        ease: "power3.out",
-      });
+    setTimeout(() => setVisible(true), 100)
+  }, [])
 
-      gsap.from(paragraphRef.current, {
-        opacity: 0,
-        y: 30,
-        duration: 0.9,
-        delay: 0.2,
-        ease: "power3.out",
-      });
+  const scrollToNext = () => {
+    const aboutSection = document.getElementById('about')
+    aboutSection?.scrollIntoView({ behavior: 'smooth' })
+  }
 
-      gsap.from(buttonsRef.current?.children || [], {
-        opacity: 0,
-        y: 20,
-        duration: 0.8,
-        delay: 0.4,
-        ease: "power3.out",
-        stagger: 0.15,
-      });
-    });
+  const fadeUp = (delay = 0) => ({
+    opacity: visible ? 1 : 0,
+    transform: visible ? 'translateY(0)' : 'translateY(30px)',
+    transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
+  })
 
-    return () => ctx.revert();
-  }, []);
+  const stats = [
+    { number: '12+', label: 'Years Experience' },
+    { number: '5000+', label: 'Happy Patients' },
+    { number: '98%', label: 'Success Rate' },
+  ]
 
   return (
-    <section className="relative min-h-screen pt-16 flex items-center justify-center text-center overflow-hidden">
-
+    <section
+      id="home"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
       {/* Background Image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1616394584738-fc6e612e71b9')",
-        }}
-      ></div>
+      <div className="absolute inset-0 z-0">
+        <ImageWithFallback
+          src={Image}
+          alt="Skincare treatment"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-linear-to-r from-black/60 via-black/50 to-black/40"></div>
+      </div>
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/50"></div>
+      {/* Animated Orbs */}
+      {/* <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/30 rounded-full blur-3xl animate-pulse"></div>
+      </div> */}
 
       {/* Content */}
-      <div className="relative z-10 max-w-3xl px-6 text-white">
-        <h1
-          ref={titleRef}
-          className="text-4xl md:text-6xl font-bold leading-tight mb-6"
-        >
-          Healthy Skin Starts With <br />
-          <span className="text-primary">Expert Dermatology Care</span>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 text-center mt-10">
+
+        {/* Badge */}
+        <div style={fadeUp(0.2)} className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-white mb-6 border border-white/20">
+          <svg className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
+          </svg>
+          <span className="text-sm">Premium Dermatology Services</span>
+        </div>
+
+        {/* Heading */}
+        <h1 style={fadeUp(0.4)} className="text-4xl sm:text-4xl lg:text-6xl font-bold text-white mb-6">
+          Healthy Skin Starts With
+          <br />
+          <span className="bg-linear-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
+            Expert Dermatology Care
+          </span>
         </h1>
 
-        <p
-          ref={paragraphRef}
-          className="text-lg md:text-xl mb-8 text-gray-200"
-        >
-          Advanced skincare treatments, acne solutions, and personalized
-          dermatology care to help you achieve radiant and healthy skin.
+        {/* Description */}
+        <p style={fadeUp(0.6)} className="text-lg sm:text-xl text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed">
+          Advanced skincare treatments, acne solutions, and personalized dermatology care
+          to help you achieve radiant and healthy skin.
         </p>
 
         {/* Buttons */}
-        <div
-          ref={buttonsRef}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <button className="bg-primary hover:bg-primary-dark px-8 py-3 rounded-lg text-lg font-semibold transition transform hover:scale-105">
-            Book Appointment
+        <div style={fadeUp(0.8)} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <button className="bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white px-8 py-4 text-lg rounded-full shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer">
+            Schedule Consultation
           </button>
+          <button className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 px-8 py-4 text-lg rounded-full transition-all duration-300 cursor-pointer">
+            View Treatments
+          </button>
+        </div>
 
-          <button className="border border-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-black transition transform hover:scale-105">
-            Learn More
-          </button>
+        {/* Stats */}
+        <div style={fadeUp(1)} className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mt-20">
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-white">
+              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                {stat.number}
+              </div>
+              <div className="text-sm sm:text-base text-gray-300 mt-1">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Down Arrow */}
-      <a
-        href="#about"
-        aria-label="Scroll down"
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 w-12 h-12 rounded-full border border-white/60 bg-white/10 backdrop-blur flex items-center justify-center hover:bg-white/20 transition"
+      {/* Scroll Indicator */}
+      <button
+        onClick={scrollToNext}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 hover:bg-white/20 transition-all  cursor-pointer"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="w-6 h-6 text-white"
-        >
-          <path d="M12 5v14" />
-          <path d="m19 12-7 7-7-7" />
+        <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
-      </a>
+      </button>
     </section>
-  );
-};
-
-export default Hero;
+  )
+}
