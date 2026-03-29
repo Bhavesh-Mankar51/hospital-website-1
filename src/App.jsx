@@ -6,6 +6,7 @@ import DoctorAbout from './components/about/about'
 import Treatments from './components/treatments/treatments'
 import AppointmentSection from './components/appointment/appointment'   
 import Footer from './components/footer/footer'
+import Reviews from './components/review/reviews'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -16,6 +17,7 @@ function App() {
       <Hero />
       <DoctorAbout />
       <Treatments />
+      <Reviews />
       <AppointmentSection />
       <Footer />
     </>
