@@ -8,6 +8,27 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  const handleScrollTo = (e, id) => {
+    e.preventDefault();
+    if (window.location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          const y = el.getBoundingClientRect().top + window.scrollY - 80;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const el = document.getElementById(id);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }
+    setIsOpen(false);
+  };
+
   const treatmentsCol1 = [
     { name: "Acne Treatment", desc: "Clear skin solutions for all acne types" },
     { name: "Anti-Aging", desc: "Reduce wrinkles and fine lines" },
@@ -41,9 +62,9 @@ const Navbar = () => {
             <button onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="hover:text-primary transition duration-300 hover:-translate-y-1 cursor-pointer">
               Home
             </button>
-            <a href="#about" className="hover:text-primary transition duration-300 hover:-translate-y-1">
+            <button onClick={(e) => handleScrollTo(e, 'about')} className="hover:text-primary transition duration-300 hover:-translate-y-1 cursor-pointer">
               About
-            </a>
+            </button>
 
             {/* Treatments Dropdown */}
             <div
@@ -114,28 +135,24 @@ const Navbar = () => {
                       <p className="text-sm font-semibold text-gray-700">Can't find what you're looking for?</p>
                       <p className="text-xs text-gray-500">Contact us for personalized treatment recommendations</p>
                     </div>
-                    <a href="#contact">
-                      <button className="bg-primary text-white text-sm px-4 py-2 rounded-lg hover:bg-primary-dark transition duration-300 whitespace-nowrap">
-                        Schedule Consultation
-                      </button>
-                    </a>
+                    <button onClick={(e) => handleScrollTo(e, 'contact')} className="bg-primary text-white text-sm px-4 py-2 rounded-lg hover:bg-primary-dark transition duration-300 whitespace-nowrap cursor-pointer">
+                      Schedule Consultation
+                    </button>
                   </div>
                 </div>
               )}
             </div>
 
-            <a href="#contact" className="hover:text-primary transition duration-300 hover:-translate-y-1">
+            <button onClick={(e) => handleScrollTo(e, 'contact')} className="hover:text-primary transition duration-300 hover:-translate-y-1 cursor-pointer">
               Contact
-            </a>
+            </button>
           </div>
 
           {/* Appointment Button */}
           <div className="hidden md:block">
-            <a href="#contact">
-              <button className="bg-primary text-white px-5 py-2 rounded-lg hover:bg-primary-dark hover:scale-105 transition duration-300">
-                Book Appointment
-              </button>
-            </a>
+            <button onClick={(e) => handleScrollTo(e, 'contact')} className="bg-primary text-white px-5 py-2 rounded-lg hover:bg-primary-dark hover:scale-105 transition duration-300 cursor-pointer">
+              Book Appointment
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -160,7 +177,7 @@ const Navbar = () => {
       >
         <div className="flex flex-col px-4 py-3 space-y-3 text-gray-700">
           <button onClick={() => { navigate("/"); window.scrollTo({ top: 0, behavior: "smooth" }); setIsOpen(false); }} className="text-left hover:text-primary transition">Home</button>
-          <a href="#about" className="hover:text-primary transition">About</a>
+          <button onClick={(e) => handleScrollTo(e, 'about')} className="text-left hover:text-primary transition">About</button>
 
           {/* Mobile Treatments Accordion */}
           <div>
@@ -179,20 +196,22 @@ const Navbar = () => {
             {treatmentsOpen && (
               <div className="ml-4 mt-2 flex flex-col space-y-2 text-sm text-gray-600">
                 {[...treatmentsCol1, ...treatmentsCol2].map((item) => (
-                  <a key={item.name} href="#treatments" className="hover:text-primary transition">
+                  <button 
+                    key={item.name} 
+                    onClick={() => { navigate(`/${item.name.toLowerCase().replace(/\s+/g, "-")}`); setIsOpen(false); }} 
+                    className="text-left hover:text-primary transition"
+                  >
                     {item.name}
-                  </a>
+                  </button>
                 ))}
               </div>
             )}
           </div>
 
-          <a href="#contact" className="hover:text-primary transition">Contact</a>
-          <a href="#contact">
-            <button className="bg-primary text-white w-full py-2 rounded-lg hover:bg-primary-dark transition">
-              Book Appointment
-            </button>
-          </a>
+          <button onClick={(e) => handleScrollTo(e, 'contact')} className="text-left hover:text-primary transition">Contact</button>
+          <button onClick={(e) => handleScrollTo(e, 'contact')} className="bg-primary text-white w-full py-2 rounded-lg hover:bg-primary-dark transition text-center cursor-pointer">
+            Book Appointment
+          </button>
         </div>
       </div>
     </nav>

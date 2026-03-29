@@ -4,7 +4,6 @@ import DoctorAbout from '../about/about';
 import Treatments from '../treatments/treatments';
 import BeforeAfterGallery from '../gallery/gallery';
 import AppointmentSection from '../appointment/appointment';
-import Footer from '../footer/footer';
 
 const home = () => {
   return (
@@ -14,7 +13,6 @@ const home = () => {
       <Treatments />
       <BeforeAfterGallery />
       <AppointmentSection />
-      <Footer />
     </div>
   );
 };
