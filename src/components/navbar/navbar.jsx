@@ -8,6 +8,16 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  const handleDoctorPortal = () => {
+    const password = prompt("Doctor Portal - Enter Password:");
+    if (password === import.meta.env.VITE_DOCTOR_PASSWORD) {
+      navigate("/prescription");
+      setIsOpen(false);
+    } else if (password !== null) {
+      alert("Incorrect password!");
+    }
+  };
+
   const handleScrollTo = (e, id) => {
     e.preventDefault();
     if (window.location.pathname !== "/") {
@@ -148,8 +158,11 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Appointment Button */}
-          <div className="hidden md:block">
+          {/* Appointment & Doctor Portal Buttons */}
+          <div className="hidden md:flex items-center gap-4">
+            <button onClick={handleDoctorPortal} className="text-primary hover:text-primary-dark font-medium transition duration-300 cursor-pointer flex justify-center items-center gap-1">
+              Doctor
+            </button>
             <button onClick={(e) => handleScrollTo(e, 'contact')} className="bg-primary text-white px-5 py-2 rounded-lg hover:bg-primary-dark hover:scale-105 transition duration-300 cursor-pointer">
               Book Appointment
             </button>
@@ -196,9 +209,9 @@ const Navbar = () => {
             {treatmentsOpen && (
               <div className="ml-4 mt-2 flex flex-col space-y-2 text-sm text-gray-600">
                 {[...treatmentsCol1, ...treatmentsCol2].map((item) => (
-                  <button 
-                    key={item.name} 
-                    onClick={() => { navigate(`/${item.name.toLowerCase().replace(/\s+/g, "-")}`); setIsOpen(false); }} 
+                  <button
+                    key={item.name}
+                    onClick={() => { navigate(`/${item.name.toLowerCase().replace(/\s+/g, "-")}`); setIsOpen(false); }}
                     className="text-left hover:text-primary transition"
                   >
                     {item.name}
@@ -209,6 +222,7 @@ const Navbar = () => {
           </div>
 
           <button onClick={(e) => handleScrollTo(e, 'contact')} className="text-left hover:text-primary transition">Contact</button>
+          <button onClick={handleDoctorPortal} className="text-left hover:text-primary transition font-medium text-primary">Admin</button>
           <button onClick={(e) => handleScrollTo(e, 'contact')} className="bg-primary text-white w-full py-2 rounded-lg hover:bg-primary-dark transition text-center cursor-pointer">
             Book Appointment
           </button>

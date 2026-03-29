@@ -8,7 +8,7 @@ const Appointment = () => {
       className="min-h-screen pt-24 pb-20 bg-slate-50 flex items-center relative overflow-hidden scroll-mt-24"
     >
       {/* Decorative background elements */}
-      <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-primary/5 to-transparent -z-10"></div>
+      <div className="absolute top-0 left-0 w-full h-96 bg-linear-to-b from-primary/5 to-transparent -z-10"></div>
       <div className="absolute top-40 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl -z-10 opacity-70"></div>
       <div className="absolute bottom-20 left-10 w-80 h-80 bg-emerald-200/20 rounded-full blur-3xl -z-10 opacity-60"></div>
 
@@ -83,7 +83,7 @@ const Appointment = () => {
         <div className="flex-1 w-full max-w-xl mx-auto lg:max-w-none">
           <div className="bg-white shadow-xl shadow-slate-200/50 rounded-3xl p-8 md:p-10 border border-slate-100 relative overflow-hidden">
             {/* Top decorative gradient line */}
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary to-emerald-300"></div>
+            <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-primary to-emerald-300"></div>
             
             <div className="mb-8">
               <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">
@@ -128,7 +128,7 @@ const Appointment = () => {
                   <label className="text-sm font-semibold text-slate-700 ml-1">Preferred Date</label>
                   <input
                     type="date"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-slate-600"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
                   />
                 </div>
               </div>

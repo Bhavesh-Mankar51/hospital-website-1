@@ -15,6 +15,7 @@ import ChemicalPeels from './components/treatments/chemical-peels'
 import Botox from './components/treatments/botox-fillers'
 import Scar from './components/treatments/scar-treatment'
 import Cosmetic from './components/treatments/cosmetic-dermatology'
+import Prescription from './components/prescription/prescription'
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/botox-&-fillers" element={<Botox />} />
           <Route path="/scar-treatment" element={<Scar />} />
           <Route path="/cosmetic-dermatology" element={<Cosmetic />} />
+          <Route path="/prescription" element={<Prescription />} />
         </Routes>
       </div>
       <Footer />
