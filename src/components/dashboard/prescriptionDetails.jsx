@@ -19,7 +19,7 @@ const PrescriptionDetails = () => {
         return;
       }
       try {
-        const res = await fetch(`http://localhost:3000/api/prescriptions/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/prescriptions/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

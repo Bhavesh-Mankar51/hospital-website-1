@@ -23,7 +23,7 @@ function Prescription() {
       navigate('/login');
       return;
     }
-    fetch('http://localhost:3000/api/medicines', {
+    fetch(`${import.meta.env.VITE_API_URL}/api/medicines`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -98,7 +98,7 @@ function Prescription() {
 
     try {
       const token = localStorage.getItem('doctorToken');
-      const res = await fetch('http://localhost:3000/api/prescriptions', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/prescriptions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -21,7 +21,7 @@ const MedicinesInfo = () => {
   const fetchMedicines = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3000/api/medicines', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/medicines`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -37,7 +37,7 @@ const MedicinesInfo = () => {
     if (!window.confirm('Delete this medicine?')) return;
     setDeletingId(id);
     try {
-      const res = await fetch(`http://localhost:3000/api/medicines/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/medicines/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -59,7 +59,7 @@ const MedicinesInfo = () => {
     setAdding(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:3000/api/medicines', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/medicines`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
