@@ -17,7 +17,7 @@ const Navbar = () => {
   const handleDoctorPortal = async () => {
     if (isLoggedIn) {
       const token = localStorage.getItem('doctorToken');
-      await fetch(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {
+      await fetch(`${import.meta.env.API_URL_V4}/api/auth/logout`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       }).catch(() => {});
