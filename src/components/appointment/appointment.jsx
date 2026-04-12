@@ -5,14 +5,14 @@ const Appointment = () => {
   return (
     <section
       id="contact"
-      className="min-h-screen pt-24 pb-20 bg-slate-50 flex items-center relative overflow-hidden scroll-mt-24"
+      className="min-h-screen pt-16 sm:pt-20 md:pt-24 pb-12 sm:pb-16 md:pb-20 bg-slate-50 flex items-center relative overflow-hidden scroll-mt-24"
     >
       {/* Decorative background elements */}
       <div className="absolute top-0 left-0 w-full h-96 bg-linear-to-b from-primary/5 to-transparent -z-10"></div>
       <div className="absolute top-40 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl -z-10 opacity-70"></div>
       <div className="absolute bottom-20 left-10 w-80 h-80 bg-emerald-200/20 rounded-full blur-3xl -z-10 opacity-60"></div>
 
-      <div className="max-w-7xl mx-auto px-6 w-full flex flex-col lg:flex-row gap-16 items-center z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full flex flex-col lg:flex-row gap-8 lg:gap-16 items-center z-10">
 
         {/* LEFT SIDE - CLINIC INFORMATION */}
         <div className="flex-1 space-y-10 w-full">
@@ -21,7 +21,7 @@ const Appointment = () => {
               <CalendarDays className="w-4 h-4" />
               <span>Get in Touch</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight leading-tight">
               Book Your <span className="text-primary">Consultation</span>
             </h2>
             <p className="text-lg text-slate-600 max-w-lg leading-relaxed">
@@ -81,7 +81,7 @@ const Appointment = () => {
 
         {/* RIGHT SIDE - APPOINTMENT FORM */}
         <div className="flex-1 w-full max-w-xl mx-auto lg:max-w-none">
-          <div className="bg-white shadow-xl shadow-slate-200/50 rounded-3xl p-8 md:p-10 border border-slate-100 relative overflow-hidden">
+          <div className="bg-white shadow-xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8 md:p-10 border border-slate-100 relative overflow-hidden">
             {/* Top decorative gradient line */}
             <div className="absolute top-0 left-0 w-full h-1.5 bg-linear-to-r from-primary to-emerald-300"></div>
             

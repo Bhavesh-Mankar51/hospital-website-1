@@ -1,318 +1,459 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const treatments = [
-  {
-    id: 1,
-    title: "Severe Acne Transformation",
-    duration: "6 months",
-    category: "Acne Treatment",
-    rating: 4.9,
-    reviews: 124,
-    before: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&q=80",
-    after: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=600&q=80",
-  },
-  {
-    id: 2,
-    title: "Moderate Acne Treatment",
-    duration: "3 months",
-    category: "Acne Treatment",
-    rating: 4.8,
-    reviews: 98,
-    before: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&q=80",
-    after: "https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600&q=80",
-  },
-  {
-    id: 3,
-    title: "Cystic Acne Recovery",
-    duration: "9 months",
-    category: "Advanced Care",
-    rating: 5.0,
-    reviews: 76,
-    before: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&q=80",
-    after: "https://images.unsplash.com/photo-1503104834685-7205e8607eb9?w=600&q=80",
-  },
-  {
-    id: 4,
-    title: "Hormonal Acne Treatment",
-    duration: "4 months",
-    category: "Hormonal Care",
-    rating: 4.7,
-    reviews: 112,
-    before: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=600&q=80",
-    after: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80",
-  },
-  {
-    id: 5,
-    title: "Rosacea Management",
-    duration: "5 months",
-    category: "Rosacea",
-    rating: 4.9,
-    reviews: 89,
-    before: "https://images.unsplash.com/photo-1607748851687-ba9a10438621?w=600&q=80",
-    after: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80",
-  },
-];
+export default function ModernTestimonialsUI() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
 
-const steps = [
-  { icon: "🩺", title: "Consultation", desc: "Personalized skin assessment" },
-  { icon: "🧪", title: "Diagnosis", desc: "Advanced skin analysis" },
-  { icon: "💊", title: "Treatment", desc: "Tailored treatment plan" },
-  { icon: "✨", title: "Results", desc: "Visible transformation" },
-];
+  const testimonials = [
+    {
+      id: 1,
+      name: "Sarah Mitchell",
+      role: "Patient",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+      text: "Dr. Patel transformed my skin completely. After years of struggling with acne, I finally found a solution that works. The personalized treatment plan made all the difference.",
+    },
+    {
+      id: 2,
+      name: "James Chen",
+      role: "Patient",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+      text: "Professional, knowledgeable, and genuinely caring. The anti-aging treatment exceeded my expectations. I'm already seeing remarkable results and feeling more confident.",
+    },
+    {
+      id: 3,
+      name: "Emily Rodriguez",
+      role: "Patient",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
+      text: "The laser treatment was painless and incredibly effective. My skin tone is now even and radiant. I can't recommend this clinic enough to anyone.",
+    },
+    {
+      id: 4,
+      name: "Marcus Johnson",
+      role: "Patient",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+      text: "After a serious accident, I was insecure about my scars. The scar revision treatment has given me my confidence back. The team here is exceptional.",
+    },
+    {
+      id: 5,
+      name: "Victoria Thompson",
+      role: "Patient",
+      image: "https://images.unsplash.com/photo-1507213526985-cfc49ae92da8?w=400&h=400&fit=crop",
+      text: "Years of dealing with eczema, finally found relief. The holistic approach to treatment has changed my quality of life dramatically. Thank you!",
+    },
+  ];
 
-const testimonials = [
-  { name: "Priya S.", text: "My skin transformed completely in just 3 months!", stars: 5 },
-  { name: "Rahul M.", text: "Best dermatology clinic I've ever visited.", stars: 5 },
-  { name: "Ananya K.", text: "The results exceeded all my expectations.", stars: 5 },
-];
+  useEffect(() => {
+    if (!isAutoPlay) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [isAutoPlay, testimonials.length]);
 
-function StarRating({ rating }) {
-  return (
-    <span style={{ color: "#f59e0b", fontSize: 13 }}>
-      {"★".repeat(Math.floor(rating))}{"☆".repeat(5 - Math.floor(rating))}
-    </span>
-  );
-}
-
-function labelStyle(side) {
-  return {
-    position: "absolute",
-    top: 12,
-    [side]: 14,
-    background: side === "left" ? "rgba(30,30,30,0.75)" : "#10b981",
-    color: "#fff",
-    fontSize: 11,
-    fontWeight: 800,
-    borderRadius: 8,
-    padding: "5px 12px",
-    letterSpacing: "1px",
-    backdropFilter: "blur(4px)",
-    textTransform: "uppercase",
+  const handleNext = () => {
+    setIsAutoPlay(false);
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
-}
 
-export default function BeforeAfterGallery() {
-  const [selected, setSelected] = useState(0);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const thumbsScrollRef = useRef(null);
-  const thumbRefs = useRef([]);
+  const handlePrev = () => {
+    setIsAutoPlay(false);
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+  };
 
-  const current = useMemo(() => treatments[selected], [selected]);
+  const getVisibleCards = () => {
+    const cardsToShow = 3;
+    const cards = [];
+    for (let i = 0; i < cardsToShow; i++) {
+      cards.push(testimonials[(currentIndex + i) % testimonials.length]);
+    }
+    return cards;
+  };
 
-  useEffect(() => {
-    const el = thumbRefs.current[selected];
-    const container = thumbsScrollRef.current;
-    if (!el || !container) return;
-    const elRect = el.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-    const scrollLeftPos = container.scrollLeft + (elRect.left - containerRect.left) - (containerRect.width / 2) + (elRect.width / 2);
-    container.scrollTo({ left: scrollLeftPos, behavior: "smooth" });
-  }, [selected]);
+  const styles = `
+    .modern-testimonials-section {
+      background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+      padding: 80px 20px;
+      position: relative;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+    }
 
-  useEffect(() => {
-    if (!previewOpen) return;
-    const onKeyDown = (e) => { if (e.key === "Escape") setPreviewOpen(false); };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [previewOpen]);
+    .testimonials-content {
+      background: white;
+      border-radius: 24px;
+      padding: 70px 50px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
 
-  const goPrev = () => setSelected((p) => Math.max(p - 1, 0));
-  const goNext = () => setSelected((p) => Math.min(p + 1, treatments.length - 1));
+    .section-label {
+      color: #10b981;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-heading {
+      font-size: 52px;
+      font-weight: 800;
+      color: #1f2937;
+      margin-bottom: 50px;
+      letter-spacing: -1.5px;
+    }
+
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-bottom: 40px;
+    }
+
+    .testimonial-card {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 40px;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 1px solid #e5e7eb;
+      animation: cardFadeIn 0.8s ease-out forwards;
+    }
+
+    .testimonial-card:nth-child(1) { animation-delay: 0s; }
+    .testimonial-card:nth-child(2) { animation-delay: 0.15s; }
+    .testimonial-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .testimonial-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
+      border-color: #10b981;
+    }
+
+    .quote-mark {
+      font-size: 80px;
+      color: #10b981;
+      font-weight: 700;
+      line-height: 0.8;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .testimonial-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #4b5563;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
+    .author-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .author-image {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 3px solid #10b981;
+    }
+
+    .author-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .author-info {
+      flex: 1;
+    }
+
+    .author-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 3px;
+      display: block;
+    }
+
+    .author-role {
+      font-size: 13px;
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .navigation-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-arrows {
+      display: flex;
+      gap: 12px;
+    }
+
+    .nav-button {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid #e5e7eb;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1f2937;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      font-weight: 600;
+    }
+
+    .nav-button:hover {
+      background: #10b981;
+      color: white;
+      border-color: #10b981;
+      transform: scale(1.08);
+      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+    }
+
+    .nav-button:active {
+      transform: scale(0.96);
+    }
+
+    .dots-container {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid #e5e7eb;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot:hover {
+      border-color: #10b981;
+    }
+
+    .dot.active {
+      background: #10b981;
+      border-color: #10b981;
+      transform: scale(1.3);
+    }
+
+    @keyframes cardFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .section-heading {
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    @media (max-width: 1200px) {
+      .testimonials-content {
+        padding: 60px 40px;
+      }
+
+      .cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+      }
+
+      .section-heading {
+        font-size: 44px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .modern-testimonials-section {
+        padding: 60px 16px;
+        min-height: auto;
+      }
+
+      .testimonials-content {
+        padding: 40px 24px;
+        border-radius: 16px;
+      }
+
+      .cards-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .section-heading {
+        font-size: 36px;
+        margin-bottom: 35px;
+      }
+
+      .testimonial-card {
+        padding: 30px;
+      }
+
+      .quote-mark {
+        font-size: 60px;
+        margin-bottom: 15px;
+      }
+
+      .testimonial-text {
+        font-size: 14px;
+        margin-bottom: 24px;
+      }
+
+      .navigation-section {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .nav-arrows {
+        order: 2;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .dots-container {
+        order: 1;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .modern-testimonials-section {
+        padding: 40px 12px;
+      }
+
+      .testimonials-content {
+        padding: 30px 18px;
+      }
+
+      .section-heading {
+        font-size: 28px;
+        margin-bottom: 30px;
+      }
+
+      .testimonial-card {
+        padding: 24px;
+      }
+
+      .quote-mark {
+        font-size: 50px;
+      }
+
+      .testimonial-text {
+        font-size: 13px;
+      }
+
+      .nav-button {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  `;
+
+  const visibleCards = getVisibleCards();
+  const totalPages = Math.ceil(testimonials.length / 3);
+  const currentPage = Math.floor(currentIndex / 3);
 
   return (
-    <div style={{ background: "linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdfa 100%)", minHeight: "100vh", padding: "48px 16px" }}>
+    <>
+      <style>{styles}</style>
+      <section className="modern-testimonials-section">
+        <div className="testimonials-content">
+          <span className="section-label">Testimonials</span>
+          <h2 className="section-heading">Hear From Happy Clients</h2>
 
-      {/* Section Header */}
-      <div style={{ textAlign: "center", marginBottom: 20 }}>
-        <span style={{ background: "#d1fae5", color: "#059669", fontSize: 12, fontWeight: 700, padding: "4px 14px", borderRadius: 20, letterSpacing: 1, textTransform: "uppercase" }}>
-          Real Results
-        </span>
-        <h2 style={{ fontSize: 36, fontWeight: 800, color: "#064e3b", margin: "12px 0 8px", letterSpacing: -0.5 }}>
-          Before & After Transformations
-        </h2>
-      </div>
+          <div className="cards-container">
+            {visibleCards.map((testimonial) => (
+              <div key={testimonial.id} className="testimonial-card">
+                <span className="quote-mark">"</span>
+                <p className="testimonial-text">{testimonial.text}</p>
 
-      {/* Main 3-column layout */}
-      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr 220px", gap: 24, maxWidth: 1200, margin: "0 auto", alignItems: "start" }}>
-
-        {/* LEFT PANEL */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-
-          {/* Treatment Info Card */}
-          <div style={{ background: "#fff", borderRadius: 16, padding: "18px 16px", boxShadow: "0 2px 16px rgba(16,185,129,0.08)", border: "1px solid #d1fae5" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>
-              Current Treatment
-            </div>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#064e3b", marginBottom: 6 }}>{current.title}</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-              <StarRating rating={current.rating} />
-              <span style={{ fontSize: 12, color: "#6b7280" }}>({current.reviews})</span>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderTop: "1px solid #f0fdf4"}}>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#10b981" }}>{current.duration}</div>
-                <div style={{ fontSize: 10, color: "#9ca3af", fontWeight: 600 }}>Duration</div>
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#10b981" }}>98%</div>
-                <div style={{ fontSize: 10, color: "#9ca3af", fontWeight: 600 }}>Success</div>
-              </div>
-              <div style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#10b981" }}>5K+</div>
-                <div style={{ fontSize: 10, color: "#9ca3af", fontWeight: 600 }}>Patients</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Process Steps */}
-          <div style={{ background: "#fff", borderRadius: 16, padding: "18px 16px", boxShadow: "0 2px 16px rgba(16,185,129,0.08)", border: "1px solid #d1fae5" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
-              Our Process
-            </div>
-            {steps.map((step, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: i < steps.length - 1 ? 12 : 0 }}>
-                <div style={{ width: 34, height: 34, background: "#d1fae5", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, flexShrink: 0 }}>
-                  {step.icon}
-                </div>
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#064e3b" }}>{step.title}</div>
-                  <div style={{ fontSize: 10.5, color: "#9ca3af" }}>{step.desc}</div>
+                <div className="author-section">
+                  <div className="author-image">
+                    <img 
+                      src={testimonial.image} 
+                      alt={testimonial.name}
+                    />
+                  </div>
+                  <div className="author-info">
+                    <span className="author-name">{testimonial.name}</span>
+                    <span className="author-role">{testimonial.role}</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* CTA */}
-          <button style={{ background: "linear-gradient(135deg, #10b981, #059669)", color: "#fff", border: "none", borderRadius: 12, padding: "14px 16px", fontWeight: 700, fontSize: 14, cursor: "pointer", width: "100%", boxShadow: "0 4px 14px rgba(16,185,129,0.35)" }}>
-            Book Consultation →
-          </button>
-        </div>
-
-        {/* CENTER — Main Gallery */}
-        <div style={{ background: "#fff", borderRadius: 20, boxShadow: "0 8px 40px rgba(16,185,129,0.12)", overflow: "hidden", padding: "20px 20px 16px" }}>
-
-          {/* Header */}
-          <div style={{ textAlign: "center", marginBottom: 14 }}>
-            <span style={{ background: "#d1fae5", color: "#059669", fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20 }}>{current.category}</span>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#064e3b", marginTop: 6 }}>{current.title}</div>
-            <div style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
-              ⏱ Treatment Duration: <strong style={{ color: "#10b981" }}>{current.duration}</strong>
+          <div className="navigation-section">
+            <div className="dots-container">
+              {Array.from({ length: totalPages }).map((_, index) => (
+                <button
+                  key={index}
+                  className={`dot ${currentPage === index ? 'active' : ''}`}
+                  onClick={() => {
+                    setIsAutoPlay(false);
+                    setCurrentIndex(index * 3);
+                  }}
+                  aria-label={`Go to page ${index + 1}`}
+                />
+              ))}
             </div>
-          </div>
 
-          {/* Before/After Images */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderRadius: 14, overflow: "hidden", boxShadow: "0 4px 24px rgba(30,80,120,0.13)" }}>
-            <div style={{ position: "relative", background: "#fff" }}>
-              <img src={current.before} alt="Before" style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", objectPosition: "center top", display: "block" }} />
-              <span style={labelStyle("left")}>Before</span>
-            </div>
-            <div style={{ position: "relative", background: "#fff", borderLeft: "1px solid rgba(0,0,0,0.06)" }}>
-              <img src={current.after} alt="After" style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", objectPosition: "center top", display: "block" }} />
-              <span style={labelStyle("right")}>After</span>
-              <button onClick={() => setPreviewOpen(true)} style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(255,255,255,0.95)", border: "none", borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 700, cursor: "pointer", color: "#059669", boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-                🔍 Preview
+            <div className="nav-arrows">
+              <button 
+                className="nav-button" 
+                onClick={handlePrev}
+                aria-label="Previous testimonials"
+              >
+                <ChevronLeft size={24} />
+              </button>
+              <button 
+                className="nav-button" 
+                onClick={handleNext}
+                aria-label="Next testimonials"
+              >
+                <ChevronRight size={24} />
               </button>
             </div>
           </div>
-
-          {/* Dot indicators */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 6, margin: "14px 0 10px" }}>
-            {treatments.map((_, i) => (
-              <button key={i} onClick={() => setSelected(i)} style={{ width: i === selected ? 24 : 8, height: 8, borderRadius: 4, background: i === selected ? "#10b981" : "#d1fae5", border: "none", cursor: "pointer", transition: "all 0.3s" }} />
-            ))}
-          </div>
-
-          {/* Thumbnails */}
-          <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }} ref={thumbsScrollRef}>
-            {treatments.map((t, i) => (
-              <button key={t.id} ref={(node) => { thumbRefs.current[i] = node; }} onClick={() => setSelected(i)} style={{ flexShrink: 0, width: 80, background: "none", border: i === selected ? "2px solid #10b981" : "2px solid transparent", borderRadius: 10, overflow: "hidden", cursor: "pointer", padding: 0, transition: "border 0.2s" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-                  <img src={t.before} alt="" style={{ width: "100%", height: 44, objectFit: "cover" }} />
-                  <img src={t.after} alt="" style={{ width: "100%", height: 44, objectFit: "cover" }} />
-                </div>
-                <div style={{ fontSize: 9, fontWeight: 700, color: i === selected ? "#059669" : "#6b7280", padding: "4px 2px", textAlign: "center", background: i === selected ? "#f0fdf4" : "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {t.title}
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Prev/Next */}
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12 }}>
-            <button onClick={goPrev} disabled={selected === 0} style={{ background: selected === 0 ? "#f3f4f6" : "#10b981", color: selected === 0 ? "#9ca3af" : "#fff", border: "none", borderRadius: 10, padding: "8px 18px", fontWeight: 700, fontSize: 13, cursor: selected === 0 ? "not-allowed" : "pointer" }}>
-              ← Prev
-            </button>
-            <button onClick={goNext} disabled={selected === treatments.length - 1} style={{ background: selected === treatments.length - 1 ? "#f3f4f6" : "#10b981", color: selected === treatments.length - 1 ? "#9ca3af" : "#fff", border: "none", borderRadius: 10, padding: "8px 18px", fontWeight: 700, fontSize: 13, cursor: selected === treatments.length - 1 ? "not-allowed" : "pointer" }}>
-              Next →
-            </button>
-          </div>
         </div>
-
-        {/* RIGHT PANEL */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-
-          {/* Testimonials */}
-          <div style={{ background: "#fff", borderRadius: 16, padding: "18px 16px", boxShadow: "0 2px 16px rgba(16,185,129,0.08)", border: "1px solid #d1fae5" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
-              Patient Reviews
-            </div>
-            {testimonials.map((t, i) => (
-              <div key={i} style={{ marginBottom: i < testimonials.length - 1 ? 12 : 0, paddingBottom: i < testimonials.length - 1 ? 12 : 0, borderBottom: i < testimonials.length - 1 ? "1px solid #f0fdf4" : "none" }}>
-                <StarRating rating={t.stars} />
-                <div style={{ fontSize: 12, color: "#374151", margin: "4px 0 3px", fontStyle: "italic" }}>"{t.text}"</div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981" }}>— {t.name}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Why Choose Us */}
-          {/* <div style={{ background: "#fff", borderRadius: 16, padding: "18px 16px", boxShadow: "0 2px 16px rgba(16,185,129,0.08)", border: "1px solid #d1fae5" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#10b981", textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 }}>
-              Why Choose Us
-            </div>
-            {["Board-certified dermatologists", "FDA-approved treatments", "Personalized skin plans", "Ongoing support & care"].map((item, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 9 }}>
-                <div style={{ width: 18, height: 18, background: "#d1fae5", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "#059669", fontWeight: 800, flexShrink: 0 }}>✓</div>
-                <span style={{ fontSize: 12, color: "#374151", fontWeight: 500 }}>{item}</span>
-              </div>
-            ))}
-          </div> */}
-
-          {/* Contact Card */}
-          <div style={{ background: "linear-gradient(135deg, #064e3b, #065f46)", borderRadius: 16, padding: "18px 16px", color: "#fff" }}>
-            <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 6 }}>Ready to Transform?</div>
-            <div style={{ fontSize: 11, color: "#a7f3d0", marginBottom: 14 }}>Book a free skin consultation with our experts today.</div>
-            <button style={{ background: "#10b981", color: "#fff", border: "none", borderRadius: 10, padding: "10px 16px", fontWeight: 700, fontSize: 12, cursor: "pointer", width: "100%" }}>
-              📞 Call Now
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Preview Modal */}
-      {previewOpen && (
-        <div onClick={(e) => { if (e.target === e.currentTarget) setPreviewOpen(false); }} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(4px)" }}>
-          <div style={{ background: "#fff", borderRadius: 20, maxWidth: 700, width: "90%", overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.3)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: "1px solid #f0fdf4" }}>
-              <div>
-                <div style={{ fontWeight: 800, fontSize: 16, color: "#064e3b" }}>{current.title}</div>
-                <div style={{ fontSize: 12, color: "#6b7280" }}>Duration: <strong style={{ color: "#10b981" }}>{current.duration}</strong></div>
-              </div>
-              <button onClick={() => setPreviewOpen(false)} style={{ background: "#f3f4f6", border: "none", borderRadius: 8, width: 32, height: 32, cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
-              <div style={{ position: "relative" }}>
-                <img src={current.before} alt="Before" style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block" }} />
-                <span style={labelStyle("left")}>Before</span>
-              </div>
-              <div style={{ position: "relative", borderLeft: "1px solid rgba(0,0,0,0.06)" }}>
-                <img src={current.after} alt="After" style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", display: "block" }} />
-                <span style={labelStyle("right")}>After</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      </section>
+    </>
   );
 }

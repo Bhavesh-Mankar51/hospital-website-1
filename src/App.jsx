@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from './components/navbar/navbar'
 import './App.css'
 import Home from './components/home/home'
@@ -16,10 +16,14 @@ import Botox from './components/treatments/botox-fillers'
 import Scar from './components/treatments/scar-treatment'
 import Cosmetic from './components/treatments/cosmetic-dermatology'
 import Prescription from './components/prescription/prescription'
-
+import Login from './components/auth/login'
+import Dashboard from './components/dashboard/dashboard'
+import PrescriptionDetails from './components/dashboard/prescriptionDetails'
+import MedicinesInfo from './components/dashboard/medicinesInfo'
 
 function App() {
-
+  const location = useLocation();
+  const hideFooter = location.pathname === '/prescription';
 
   return (
     <div>
@@ -40,9 +44,13 @@ function App() {
           <Route path="/scar-treatment" element={<Scar />} />
           <Route path="/cosmetic-dermatology" element={<Cosmetic />} />
           <Route path="/prescription" element={<Prescription />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/prescription/:id" element={<PrescriptionDetails />} />
+          <Route path="/medicines" element={<MedicinesInfo />} />
         </Routes>
       </div>
-      <Footer />
+      {!hideFooter && <Footer />}
     </div>
   )
 }

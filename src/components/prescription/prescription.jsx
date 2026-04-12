@@ -1,18 +1,39 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useReactToPrint } from 'react-to-print';
 import {
   Plus, Printer, Trash2, FileText
 } from 'lucide-react';
-import { medicineNames } from './medicines';
 import './prescription.css';
 
 function Prescription() {
   const [meta, setMeta] = useState({
-    patientId: 'PT-1024',
     date: new Date().toISOString().split('T')[0],
     referredBy: 'Walk-in',
     nextVisit: '15-05-2026'
   });
+
+  const navigate = useNavigate();
+  const [isSaving, setIsSaving] = useState(false);
+  const [medicineNames, setMedicineNames] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('doctorToken');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    fetch('http://localhost:3000/api/medicines', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data.length > 0) {
+          setMedicineNames(data.data.map(m => m.name));
+        }
+      })
+      .catch(() => {});
+  }, [navigate]);
 
   const [patient, setPatient] = useState({
     name: 'John Doe',
@@ -60,9 +81,49 @@ function Prescription() {
   const printRef = useRef();
 
   const handlePrint = useReactToPrint({
-    contentRef: () => printRef.current,
+    contentRef: printRef,
     documentTitle: `Prescription_${patient.name.replace(/ /g, '_')}`,
   });
+
+  const handleSaveAndPrint = async () => {
+    setIsSaving(true);
+    const { name, ...patientRest } = patient;
+    const payload = {
+      ...meta,
+      ...clinical,
+      ...patientRest,
+      patientName: name,
+      medicines
+    };
+
+    try {
+      const token = localStorage.getItem('doctorToken');
+      const res = await fetch('http://localhost:3000/api/prescriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        console.log('Save successful, triggering print...');
+        setTimeout(() => {
+          handlePrint();
+        }, 100);
+      } else {
+        alert('Failed to save prescription: ' + (data.message || 'Unknown error'));
+        if (data.message === 'Not authorized, token failed' || data.message === 'Not authorized, no token') {
+            navigate('/login');
+        }
+      }
+    } catch (err) {
+      alert('Error saving prescription: ' + err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -73,51 +134,60 @@ function Prescription() {
     return dateStr;
   }
 
+
+
   return (
     <div className="app-container">
       <div className="sidebar">
         <div className="sidebar-header">
-          <h2><FileText size={20} /> Rx Builder</h2>
-          <button className="btn btn-print" onClick={handlePrint}>
-            <Printer size={16} /> Print PDF
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <button className="btn" style={{ background: '#475569', color: 'white' }} onClick={() => navigate('/dashboard')}>
+              ← Dashboard
+            </button>
+            <h2>Rx Builder</h2>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button className="btn" style={{ background: '#64748b', color: 'white' }} onClick={() => handlePrint()}>
+              <Printer size={16} /> Print Only
+            </button>
+            <button className="btn btn-print" onClick={handleSaveAndPrint} disabled={isSaving}>
+              <Printer size={16} /> {isSaving ? 'Saving...' : 'Save & Print'}
+            </button>
+          </div>
         </div>
 
         <div className="sidebar-content">
           <div className="form-section">
-            <div className="form-section-title">Patient Info</div>
+            <div className="form-section-title">PATIENT INFO</div>
             <div className="form-row">
-              <div className="form-group">
-                <label>Patient ID</label>
-                <input type="text" name="patientId" value={meta.patientId} onChange={handleMetaChange} />
-              </div>
-              <div className="form-group">
+              <div className="form-group" style={{ flex: 1 }}>
                 <label>Date</label>
                 <input type="date" name="date" value={meta.date} onChange={handleMetaChange} />
               </div>
-            </div>
-
-            <div className="form-group">
-              <label>Full Name</label>
-              <input type="text" name="name" value={patient.name} onChange={handlePatientChange} placeholder="John Doe" />
+              <div className="form-group" style={{ flex: 2 }}>
+                <label>Full Name</label>
+                <input type="text" name="name" value={patient.name} onChange={handlePatientChange} placeholder="Full Name" />
+              </div>
             </div>
 
             <div className="form-row">
-              <div className="form-group">
+              <div className="form-group" style={{ flex: 1 }}>
                 <label>Gender</label>
                 <select name="gender" value={patient.gender} onChange={handlePatientChange}>
-                  <option value="M">Male (M)</option>
-                  <option value="F">Female (F)</option>
-                  <option value="O">Other (O)</option>
+                  <option value="Gender">Gender</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                  <option value="O">Other</option>
                 </select>
               </div>
-              <div className="form-group" style={{ flex: 0.6 }}>
+              <div className="form-group" style={{ flex: 1 }}>
                 <label>Age</label>
-                <input type="number" name="age" value={patient.age} onChange={handlePatientChange} />
+                <input type="number" name="age" value={patient.age} onChange={handlePatientChange} placeholder="Age" />
               </div>
-              <div className="form-group" style={{ flex: 0.4 }}>
+              <div className="form-group" style={{ flex: 1 }}>
                 <label>Unit</label>
                 <select name="ageUnit" value={patient.ageUnit} onChange={handlePatientChange}>
+                  <option value="Unit">Unit</option>
                   <option value="Y">Y</option>
                   <option value="M">M</option>
                   <option value="D">D</option>
@@ -125,222 +195,196 @@ function Prescription() {
               </div>
             </div>
 
-            <div className="form-group">
-              <label>Address</label>
-              <input type="text" name="address" value={patient.address} onChange={handlePatientChange} placeholder="e.g. Mumbai, India" />
-            </div>
-
             <div className="form-row">
-              <div className="form-group">
-                <label>Weight (kg)</label>
-                <input type="text" name="weight" value={patient.weight} onChange={handlePatientChange} />
+              <div className="form-group" style={{ flex: 2 }}>
+                <label>Address</label>
+                <input type="text" name="address" value={patient.address} onChange={handlePatientChange} placeholder="Address" />
               </div>
-              <div className="form-group">
-                <label>Height (cms)</label>
-                <input type="text" name="height" value={patient.height} onChange={handlePatientChange} />
+              <div className="form-group" style={{ flex: 1 }}>
+                <label>Weight</label>
+                <input type="text" name="weight" value={patient.weight} onChange={handlePatientChange} placeholder="Weight" />
               </div>
-              <div className="form-group">
-                <label>BP (mmHg)</label>
-                <input type="text" name="bp" value={patient.bp} onChange={handlePatientChange} />
+              <div className="form-group" style={{ flex: 1 }}>
+                <label>Height</label>
+                <input type="text" name="height" value={patient.height} onChange={handlePatientChange} placeholder="Height" />
               </div>
-            </div>
-
-            <div className="form-group">
-              <label>Referred By</label>
-              <input type="text" name="referredBy" value={meta.referredBy} onChange={handleMetaChange} placeholder="Walk-in" />
+              <div className="form-group" style={{ flex: 1 }}>
+                <label>BP</label>
+                <input type="text" name="bp" value={patient.bp} onChange={handlePatientChange} placeholder="BP" />
+              </div>
             </div>
           </div>
 
           <div className="form-section">
-            <div className="form-section-title">Clinical Notes</div>
+            <div className="form-section-title">CLINICAL NOTES</div>
             <div className="form-group">
               <label>Diagnosis</label>
-              <textarea name="diagnosis" value={clinical.diagnosis} onChange={handleClinicalChange} placeholder="e.g. Acne Vulgaris"></textarea>
+              <textarea name="diagnosis" value={clinical.diagnosis} onChange={handleClinicalChange} placeholder="Diagnosis" rows="3"></textarea>
             </div>
           </div>
 
           <div className="form-section">
-            <div className="form-section-title">Medications (Rx)</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div className="form-section-title" style={{ marginBottom: 0 }}>MEDICATIONS (RX)</div>
+              <button className="btn btn-print" onClick={addMedicine} style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>
+                <Plus size={16} /> Add Medicine
+              </button>
+            </div>
 
             {medicines.map((med, index) => (
               <div key={med.id} className="medicine-card">
-                <button className="remove-btn" onClick={() => removeMedicine(med.id)} title="Remove medicine">
-                  <Trash2 size={14} />
-                </button>
-                <div className="form-group">
-                  <label>Medicine Name</label>
-                  <input type="text" list="med-list" value={med.name} onChange={(e) => updateMedicine(med.id, 'name', e.target.value)} placeholder="e.g. TAB. DEMO MEDICINE 1" />
+                <div className="medicine-header">
+                  <div className="medicine-title">
+                    <span>{index + 1})</span>
+                    <input type="text" list="med-list" value={med.name} onChange={(e) => updateMedicine(med.id, 'name', e.target.value)} placeholder="ENTER MEDICINE NAME" className="med-name-input" />
+                  </div>
+                  <div className="medicine-actions">
+                    <button className="icon-btn edit-btn" title="Edit"><FileText size={16} /></button>
+                    <button className="icon-btn remove-btn" onClick={() => removeMedicine(med.id)} title="Remove medicine"><Trash2 size={16} /></button>
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>Dosage & Instructions</label>
-                  <textarea value={med.dosage} onChange={(e) => updateMedicine(med.id, 'dosage', e.target.value)} placeholder="e.g. 1 Morning, 1 Night\n(After Food)" rows="2"></textarea>
-                </div>
-                <div className="form-group">
-                  <label>Duration & Total Quantity</label>
-                  <textarea value={med.duration} onChange={(e) => updateMedicine(med.id, 'duration', e.target.value)} placeholder="e.g. 10 Days\n(Total: 20 Tabs)" rows="2"></textarea>
+                
+                <div className="form-row" style={{ marginBottom: 0 }}>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label>Dosage & Instructions</label>
+                    <input type="text" value={med.dosage} onChange={(e) => updateMedicine(med.id, 'dosage', e.target.value)} placeholder="Dosage & Instructions" />
+                  </div>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label>Duration & Total Quantity</label>
+                    <input type="text" value={med.duration} onChange={(e) => updateMedicine(med.id, 'duration', e.target.value)} placeholder="Duration / Quantity" />
+                  </div>
                 </div>
               </div>
             ))}
-
+            
             <datalist id="med-list">
               {medicineNames.map((m, idx) => (
                 <option key={idx} value={m} />
               ))}
             </datalist>
-
-            <button className="btn btn-secondary btn-full" onClick={addMedicine}>
-              <Plus size={16} /> Add Medicine
-            </button>
           </div>
 
           <div className="form-section">
-            <div className="form-section-title">Follow-up & Advice</div>
+            <div className="form-section-title">FOLLOW-UP & ADVICE</div>
             <div className="form-group">
               <label>Advice Given</label>
-              <textarea name="advice" value={clinical.advice} onChange={handleClinicalChange} placeholder="e.g. Drink plenty of water"></textarea>
+              <textarea name="advice" value={clinical.advice} onChange={handleClinicalChange} placeholder="List advice here" rows="4"></textarea>
             </div>
-            <div className="form-group">
+            <div className="form-group" style={{ width: '50%', marginTop: '1rem' }}>
               <label>Next Visit Date</label>
-              <input type="text" name="nextVisit" value={meta.nextVisit} onChange={handleMetaChange} placeholder="e.g. 15-05-2026" />
+              <input type="date" name="nextVisit" value={meta.nextVisit} onChange={handleMetaChange} />
             </div>
           </div>
         </div>
       </div>
 
       <div className="preview-area">
-        <div className="paper-sheet" ref={printRef}>
-          <div className="watermark">
-            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50 0 L100 50 L50 100 L0 50 Z" fill="#d1fae5" />
-              <path d="M50 20 L80 50 L50 80 L20 50 Z" fill="#10b981" />
-            </svg>
-            <div className="watermark-text">SkinCare</div>
-            <div className="watermark-subtext">Advanced Dermatology Center</div>
-          </div>
-
-          <div className="print-header">
-            <div className="header-col header-col-left">
-              <div style={{
-                width: '120px',
-                height: '80px',
-                border: '2px dashed #9ca3af',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#6b7280',
-                fontWeight: 'bold',
-                fontSize: '0.9rem',
-                backgroundColor: '#f9fafb',
-                borderRadius: '8px',
-                textAlign: 'center'
-              }}>
-                HOSPITAL LOGO
+        <div className="zoom-wrapper">
+          <div className="paper-sheet" ref={printRef}>
+            <div className="print-header-modern">
+              <div className="print-header-left">
+                <div className="clinic-brand">
+                  <div className="clinic-name-text">SkinCare Clinic</div>
+                </div>
+                <div className="clinic-address">
+                  2181 Nowle Road, Suite 3080,<br/>
+                  SkinCare, TX 38525
+                </div>
+              </div>
+              <div className="print-header-right">
+                <div className="doc-details-title">Dr Allen Smith</div>
+                <div className="doc-details-text">
+                  MBBS MD DNB<br/>
+                  Contact: 9876543210<br/>
+                  <span className="doc-website">www.skincareclinic.com</span>
+                </div>
               </div>
             </div>
 
-            <div className="header-col header-col-center">
-              <div className="doc-name">Name of Doctor</div>
-              <div className="doc-credentials">
-                M.B.B.S., M.D. (Dermatology)<br /> Reg. No: 123456
+            <div className="separator-line-modern"></div>
+
+            <div className="patient-info-container">
+              <div className="patient-info-row">
+                <div className="info-item">
+                  <span className="info-label">Patient Name:</span>
+                  <span className="info-val">{patient.name}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Visit Date:</span>
+                  <span className="info-val">{formatDate(meta.date)}</span>
+                </div>
+              </div>
+              <div className="patient-info-row">
+                <div className="info-item">
+                  <span className="info-label">Age / Gender:</span>
+                  <span className="info-val">
+                    {patient.age} {patient.ageUnit === 'Y' ? 'years' : patient.ageUnit === 'M' ? 'months' : 'days'} / {patient.gender === 'M' ? 'Male' : patient.gender === 'F' ? 'Female' : patient.gender}
+                  </span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Weight:</span>
+                  <span className="info-val">{patient.weight} kg</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">BP:</span>
+                  <span className="info-val">{patient.bp}</span>
+                </div>
               </div>
             </div>
 
-            <div className="header-col header-col-right">
-              <div className="clinic-name">SkinCare Clinic</div>
-              <div className="clinic-info">
-                123 Health Ave, Medical City<br />
-                Ph: +1 234 567 8900<br />
-                Timing: 09:00 AM - 05:00 PM<br />
-                Closed: Sunday
-              </div>
-            </div>
-          </div>
-
-          <div className="separator-line"></div>
-
-          <div className="top-meta">
-            <div className="barcode-placeholder">
-              ||||||||||||||||
-            </div>
-            <div className="print-date">
-              Date: {formatDate(meta.date)}
-            </div>
-          </div>
-
-          <div className="patient-info-block">
-            <div className="patient-id-line">
-              ID: {meta.patientId} - {patient.name} ({patient.gender}) / {patient.age} {patient.ageUnit}
-            </div>
-            {patient.address && <div>Address: {patient.address}</div>}
-
-            <div style={{ marginTop: '0.5rem' }}>
-              {[
-                patient.weight && `Weight(kg): ${patient.weight}`,
-                patient.height && `Height (cms): ${patient.height}`,
-                patient.bp && `BP: ${patient.bp} mmHg`
-              ].filter(Boolean).join(', ')}
-            </div>
-
-            {meta.referredBy && (
-              <div style={{ marginTop: '0.5rem', fontWeight: 'bold' }}>
-                Referred By: {meta.referredBy}
+            {clinical.diagnosis && (
+              <div className="modern-section" style={{ marginTop: '1.5rem' }}>
+                <div className="modern-label">Diagnosis:</div>
+                <div className="modern-text">{clinical.diagnosis}</div>
               </div>
             )}
-          </div>
 
-          {clinical.diagnosis && (
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              <div className="block-label" style={{ marginBottom: '0.2rem' }}>Diagnosis:</div>
-              {clinical.diagnosis.split('\n').map((line, i) => (
-                line.trim() && <div key={i} className="list-item">{line}</div>
-              ))}
+            <div className="rx-symbol-modern">℞</div>
+
+            <div className="meds-table-container">
+              <table className="meds-table-modern">
+                <thead>
+                  <tr>
+                    <th style={{ width: '40%' }}>Medication</th>
+                    <th style={{ width: '30%' }}>Dosage & Instructions</th>
+                    <th style={{ width: '30%' }}>Duration & Total Quantity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {medicines.map((med, idx) => (
+                    <tr key={med.id}>
+                      <td>{idx + 1}) {med.name}</td>
+                      <td>{med.dosage}</td>
+                      <td>{med.duration}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
 
-          <div className="rx-symbol">℞</div>
+            {clinical.advice && (
+              <div className="modern-section advice-section">
+                <div className="modern-label">Advice:</div>
+                <div className="modern-list">
+                  {clinical.advice.split('\n').map((line, i) => (
+                    line.trim() && <div key={i} className="advice-item">{line}</div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-          <table className="meds-table" style={{ position: 'relative', zIndex: 2 }}>
-            <thead>
-              <tr>
-                <th style={{ width: '45%' }}>Medicine Name</th>
-                <th style={{ width: '35%' }}>Dosage</th>
-                <th style={{ width: '20%' }}>Duration</th>
-              </tr>
-            </thead>
-            <tbody>
-              {medicines.map((med, idx) => (
-                <tr key={med.id}>
-                  <td>
-                    <span className="med-serial">{idx + 1})</span>
-                    <span className="med-name">{med.name}</span>
-                  </td>
-                  <td className="med-dosage">{med.dosage}</td>
-                  <td className="med-duration">{med.duration}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            {meta.nextVisit && (
+              <div className="next-visit-modern">
+                <span className="modern-label">Next Visit Info: </span>
+                <span className="modern-text">{formatDate(meta.nextVisit)}</span>
+              </div>
+            )}
 
-          {clinical.advice && (
-            <div style={{ position: 'relative', zIndex: 2 }}>
-              <div className="block-label" style={{ marginBottom: '0.2rem' }}>Advice Given:</div>
-              {clinical.advice.split('\n').map((line, i) => (
-                line.trim() && <div key={i} className="list-item">{line}</div>
-              ))}
-            </div>
-          )}
-
-          {meta.nextVisit && (
-            <div className="next-visit" style={{ position: 'relative', zIndex: 2 }}>
-              Next Visit: {meta.nextVisit}
-            </div>
-          )}
-
-          <div className="signature-block" style={{ zIndex: 2 }}>
-            <img src="" alt="Signature" className="signature-img" style={{ filter: 'grayscale(100%) opacity(0.8)' }} />
-            <div className="signature-name">
-              Name of Doctor<br />
-              M.B.B.S., M.D.
+            <div className="signature-block-modern">
+              <div className="signature-label">Signature,</div>
+              <div className="signature-img-placeholder">Signature</div>
+              <div className="signature-name-modern">Signature P.M.</div>
+              <div className="signature-clinic">SkinCare Clinic</div>
             </div>
           </div>
         </div>

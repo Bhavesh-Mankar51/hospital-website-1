@@ -3,7 +3,7 @@ import { CheckCircle } from "lucide-react";
 
 const DoctorAbout = () => {
   return (
-    <section id="about" className="bg-gray-50 py-16 px-6 md:px-20">
+    <section id="about" className="bg-gray-50 py-12 sm:py-16 px-4 sm:px-6 md:px-20">
       {/* Heading */}
       <div className="text-center mb-12">
         <p className="text-green-600 font-semibold tracking-wide">
@@ -71,7 +71,7 @@ const DoctorAbout = () => {
           {/* Specializations */}
           <div className="mt-8">
             <h4 className="text-xl font-semibold mb-3">Specializations</h4>
-            <div className="grid grid-cols-2 gap-2 text-gray-700">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-gray-700">
               {[
                 "Acne Treatment",
                 "Laser Treatment",

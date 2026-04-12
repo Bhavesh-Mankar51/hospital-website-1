@@ -1,21 +1,33 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [treatmentsOpen, setTreatmentsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('doctorToken'));
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem('doctorToken'));
+  }, [location]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const handleDoctorPortal = () => {
-    const password = prompt("Doctor Portal - Enter Password:");
-    if (password === import.meta.env.VITE_DOCTOR_PASSWORD) {
-      navigate("/prescription");
-      setIsOpen(false);
-    } else if (password !== null) {
-      alert("Incorrect password!");
+  const handleDoctorPortal = async () => {
+    if (isLoggedIn) {
+      const token = localStorage.getItem('doctorToken');
+      await fetch(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      }).catch(() => {});
+      localStorage.removeItem('doctorToken');
+      setIsLoggedIn(false);
+      navigate('/');
+    } else {
+      navigate('/login');
     }
+    setIsOpen(false);
   };
 
   const handleScrollTo = (e, id) => {
@@ -94,7 +106,8 @@ const Navbar = () => {
 
               {/* Dropdown Panel */}
               {treatmentsOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-150 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-[min(700px,90vw)] z-50">
+                <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
 
                   {/* Header */}
                   <div className="bg-linear-to-r from-primary to-teal-400 px-6 py-4">
@@ -150,6 +163,7 @@ const Navbar = () => {
                     </button>
                   </div>
                 </div>
+                </div>
               )}
             </div>
 
@@ -161,7 +175,7 @@ const Navbar = () => {
           {/* Appointment & Doctor Portal Buttons */}
           <div className="hidden md:flex items-center gap-4">
             <button onClick={handleDoctorPortal} className="text-primary hover:text-primary-dark font-medium transition duration-300 cursor-pointer flex justify-center items-center gap-1">
-              Doctor
+              {isLoggedIn ? 'Logout' : 'Login'}
             </button>
             <button onClick={(e) => handleScrollTo(e, 'contact')} className="bg-primary text-white px-5 py-2 rounded-lg hover:bg-primary-dark hover:scale-105 transition duration-300 cursor-pointer">
               Book Appointment
@@ -222,7 +236,6 @@ const Navbar = () => {
           </div>
 
           <button onClick={(e) => handleScrollTo(e, 'contact')} className="text-left hover:text-primary transition">Contact</button>
-          <button onClick={handleDoctorPortal} className="text-left hover:text-primary transition font-medium text-primary">Admin</button>
           <button onClick={(e) => handleScrollTo(e, 'contact')} className="bg-primary text-white w-full py-2 rounded-lg hover:bg-primary-dark transition text-center cursor-pointer">
             Book Appointment
           </button>

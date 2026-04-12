@@ -72,7 +72,7 @@ export default function HeroSection() {
         </div>
 
         {/* Heading */}
-        <h1 style={fadeUp(0.4)} className="text-4xl sm:text-4xl lg:text-6xl font-bold text-white mb-6">
+        <h1 style={fadeUp(0.4)} className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-6">
           Healthy Skin Starts With
           <br />
           <span className="bg-linear-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
@@ -81,7 +81,7 @@ export default function HeroSection() {
         </h1>
 
         {/* Description */}
-        <p style={fadeUp(0.6)} className="text-lg sm:text-xl text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed">
+        <p style={fadeUp(0.6)} className="text-base sm:text-lg text-gray-200 max-w-3xl mx-auto mb-10 leading-relaxed px-2 sm:px-0">
           Advanced skincare treatments, acne solutions, and personalized dermatology care
           to help you achieve radiant and healthy skin.
         </p>
@@ -97,13 +97,13 @@ export default function HeroSection() {
         </div>
 
         {/* Stats */}
-        <div style={fadeUp(1)} className="grid grid-cols-3 gap-8 max-w-3xl mx-auto mt-20">
+        <div style={fadeUp(1)} className="grid grid-cols-3 gap-4 sm:gap-8 max-w-3xl mx-auto mt-14 sm:mt-20">
           {stats.map((stat) => (
             <div key={stat.label} className="text-white">
-              <div className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-linear-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
                 {stat.number}
               </div>
-              <div className="text-sm sm:text-base text-gray-300 mt-1">{stat.label}</div>
+              <div className="text-xs sm:text-sm lg:text-base text-gray-300 mt-1">{stat.label}</div>
             </div>
           ))}
         </div>
