@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import acneImg from "../../assets/acne_treatment.png";
 import antiAgingImg from "../../assets/anti_aging.png";
 import hairLossImg from "../../assets/hair_loss.png";
@@ -12,44 +13,51 @@ const treatments = [
     desc: "Comprehensive acne care including chemical peels, laser therapy, and customized skincare.",
     duration: "30-45 mins",
     img: acneImg,
+    route: "/acne-treatment",
   },
   {
     title: "Anti-Aging Treatment",
     desc: "Advanced anti-aging solutions including fillers and rejuvenation therapies.",
     duration: "20-30 mins",
     img: antiAgingImg,
+    route: "/anti-aging",
   },
   {
     title: "Hair Loss Treatment",
     desc: "Specialized therapies including PRP, topical treatments, and scalp care.",
     duration: "45-60 mins",
     img: hairLossImg,
+    route: "/hair-fall-treatment",
   },
   {
     title: "Skin Allergy Care",
     desc: "Expert diagnosis and treatment of allergic reactions and sensitive skin.",
     duration: "15-30 mins",
     img: allergyImg,
+    route: null,
   },
   {
     title: "Mole Removal",
     desc: "Safe and precise mole removal procedures with minimal scarring.",
     duration: "20-40 mins",
     img: moleRemovalImg,
+    route: "/mole-removal",
   },
   {
     title: "Scar Treatment",
     desc: "Advanced scar reduction therapies including microneedling and laser.",
     duration: "30-60 mins",
     img: scarTreatmentImg,
+    route: "/scar-treatment",
   },
 ];
 
 const Treatments = () => {
+  const navigate = useNavigate();
   return (
     <section
       id="treatments"
-      className="min-h-screen pt-20 pb-20 scroll-mt-24 bg-gradient-to-br from-green-50 via-emerald-50 to-white"
+      className="min-h-screen pt-20 pb-20 scroll-mt-24 bg-linear-to-br from-green-50 via-emerald-50 to-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -80,7 +88,7 @@ const Treatments = () => {
                 />
 
                 {/* Overlay Title */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end">
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end">
                   <div className="px-5 py-4">
                     <h3 className="text-white text-lg font-semibold">
                       {treatment.title}
@@ -100,9 +108,14 @@ const Treatments = () => {
                   <span className="text-gray-500">
                     Duration: {treatment.duration}
                   </span>
-                  <button className="text-blue-600 font-medium hover:underline">
-                    Learn More →
-                  </button>
+                  {treatment.route && (
+                    <button
+                      onClick={() => navigate(treatment.route)}
+                      className="text-primary font-medium hover:underline cursor-pointer"
+                    >
+                      Learn More →
+                    </button>
+                  )}
                 </div>
               </div>
 

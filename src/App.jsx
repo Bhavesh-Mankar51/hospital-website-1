@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import Navbar from './components/navbar/navbar'
 import './App.css'
@@ -21,12 +22,19 @@ import Dashboard from './components/dashboard/dashboard'
 import PrescriptionDetails from './components/dashboard/prescriptionDetails'
 import MedicinesInfo from './components/dashboard/medicinesInfo'
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
 function App() {
   const location = useLocation();
   const hideFooter = location.pathname === '/prescription';
 
   return (
     <div>
+      <ScrollToTop />
       <Navbar />
       <div>
         <Routes>
