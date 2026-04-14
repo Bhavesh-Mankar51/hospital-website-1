@@ -91,7 +91,12 @@ export default function HeroSection() {
           <button className="bg-linear-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 text-white px-8 py-4 text-lg rounded-full shadow-2xl hover:shadow-emerald-500/50 transition-all duration-300 transform hover:scale-105 cursor-pointer">
             Schedule Consultation
           </button>
-          <button className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 px-8 py-4 text-lg rounded-full transition-all duration-300 cursor-pointer">
+          <button
+            onClick={() => {
+              const el = document.getElementById('treatments');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 px-8 py-4 text-lg rounded-full transition-all duration-300 cursor-pointer">
             View Treatments
           </button>
         </div>
